@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "hytools",
+    "name": "Hytools",
+    "description": "Hytools mod for Hypixel.",
+    "version": "${version}",
+    "mcversion": "1.8.9",
+    "url": "",
+    "updateUrl": "",
+    "authorList": ["Sndy"],
+    "credits": "JetBrains for their font JetBrains Mono.",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]
