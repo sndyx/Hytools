@@ -1,5 +1,6 @@
 package moe.sndy.hytools.strawberry;
 
+import moe.sndy.hytools.util.StringTools;
 import org.apache.commons.io.IOUtils;
 
 import java.io.FileReader;
@@ -18,7 +19,7 @@ public class StrawberryTranspiler {
         for(char c : src.toCharArray()){
             if(c == '"'){
                 if(builder.toString().startsWith("\"")){
-                    if(!isEscaped(builder.toString() + '"')){
+                    if(!StringTools.isEscaped(builder.toString() + '"')){
                         strings.add(builder.toString() + "\"");
                         builder = new StringBuilder();
                     } else {
@@ -57,8 +58,8 @@ public class StrawberryTranspiler {
         src = src.replaceAll("([^a-zA-Z0-9_])double([^a-zA-Z0-9_])", "$1double_" + SEED + "$2");
         src = src.replaceAll("=[ \n]*\\[([^|]+)]", "={$1}");
         src = src.replaceAll("([^a-zA-Z0-9_])func ", "$1public ");
-        src = src.replaceAll("([^a-zA-Z0-9_])command[^|]*\\(([^|]*)\\) ", "$1@Command($2)public void ");
-        src = src.replaceAll("([^a-zA-Z0-9_])event ", "$1@Event public void ");
+        src = src.replaceAll("([^a-zA-Z0-9_])command[^|]*\\(([^|]*)\\) ", "$1@Command($2)public static void ");
+        src = src.replaceAll("([^a-zA-Z0-9_])event ", "$1@Event public static void ");
         src = src.replaceAll("([^a-zA-Z0-9_])global ", "$1static ");
         src = src.replaceAll("([^a-zA-Z0-9_])berry |^berry ", "$1import ");
         src = src.replaceAll("([^a-zA-Z0-9_])strawberry |^strawberry ", "$1public class ");
@@ -88,21 +89,16 @@ public class StrawberryTranspiler {
             if(src.substring(0, index).contains(root)){
                 String beforeIndex = src.substring(0, index);
                 String afterSeed = beforeIndex.substring(beforeIndex.lastIndexOf(root) - 2, beforeIndex.length());
-                int rBraceCount = occurrencesOf(afterSeed, '}') - occurrencesOf(afterSeed, '{');
+                int rBraceCount = StringTools.occurrencesOf(afterSeed, '}') - StringTools.occurrencesOf(afterSeed, '{');
                 src = src.replaceFirst("&I", "two_" + (Integer.parseInt("" + afterSeed.charAt(0)) - rBraceCount) + "_&S");
             } else {
                 break;
             }
         }
         src = src.replace("&S", root);
+        src = src.replaceAll("$\\(([^)]*)\\)", "EventBase $1");
         src = "import strawberry.annotation.Event;import strawberry.annotation.Command;" + src;
         return src;
-    }
-
-    private static boolean isEscaped(String val){
-        if(val.length() - 2 < 0) return false;
-        if(val.charAt(val.length() - 2) == '\\') return !isEscaped(val.substring(0, val.length() - 1));
-        return false;
     }
 
     private static final long SEED = Long.parseLong(String.valueOf(Math.random()).substring(2));
@@ -112,16 +108,6 @@ public class StrawberryTranspiler {
         current++;
         var = (type + "_" + current + "_" + SEED);
         return var;
-    }
-
-    private static int occurrencesOf(String in, char match){
-        int count = 0;
-        for(char c : in.toCharArray()){
-            if(c == match){
-                count++;
-            }
-        }
-        return count;
     }
 
 }
