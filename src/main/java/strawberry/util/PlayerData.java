@@ -12,6 +12,14 @@ public class PlayerData {
         data = new HashMap<UUID, HashMap<String, Object>>();
     }
 
+    public Object get(UUID id, String key){
+        return data.get(id).get(key);
+    }
+
+    public Collection<Object> getAll(UUID id, String key){
+        return data.get(id).values();
+    }
+
     public void clear(){
         data.clear();
     }
@@ -22,14 +30,6 @@ public class PlayerData {
 
     public void add(UUID id, String key, Object val){
         data.get(id).put(key, val);
-    }
-
-    public Object get(UUID id, String key){
-        return data.get(id).get(key);
-    }
-
-    public Collection<Object> getAll(UUID id, String key){
-        return data.get(id).values();
     }
 
 }

@@ -32,33 +32,6 @@ public class Strawberry {
         enabled = true;
     }
 
-    public static boolean invokeCommand(String command, String[] args) {
-        if(!enabled) return false;
-        boolean unknown = true;
-        for (Class<?> c : classes) {
-            for (Method m : c.getMethods()) {
-                if (m.isAnnotationPresent(Command.class)) {
-                    boolean found = false;
-                    for (String executor : m.getAnnotation(Command.class).executors()) {
-                        if (executor.equals(command)) {
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (found) {
-                        unknown = false;
-                        try {
-                            m.invoke(null, new Object[]{ args });
-                        } catch (Exception e ){
-                            thrown(e, "command execution");
-                        }
-                    }
-                }
-            }
-        }
-        return !unknown;
-    }
-
     public static void invokeEvent(EventBase event) {
         if (!enabled) return;
         for (Class<?> c : classes) {

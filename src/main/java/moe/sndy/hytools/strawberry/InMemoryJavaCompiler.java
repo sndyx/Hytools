@@ -66,13 +66,9 @@ public class InMemoryJavaCompiler {
      * @throws Exception
      */
     public Map<String, Class<?>> compileAll() throws Exception {
-        if (sourceCodes.size() == 0) {
-            throw new CompilationException("No source code to compile");
-        }
+        if (sourceCodes.size() == 0) throw new CompilationException("No source code to compile");
         Collection<SourceCode> compilationUnits = sourceCodes.values();
-        CompiledCode[] code;
-
-        code = new CompiledCode[compilationUnits.size()];
+        CompiledCode[] code = new CompiledCode[compilationUnits.size()];
         Iterator<SourceCode> iter = compilationUnits.iterator();
         for (int i = 0; i < code.length; i++) {
             code[i] = new CompiledCode(iter.next().getClassName());
